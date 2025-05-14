@@ -1,0 +1,64 @@
+import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
+import prisma from '@/lib/db';
+
+// Helper function to verify admin token
+const verifyAdminToken = (request) => {
+  try {
+    const authCookie = cookies().get('admin_auth');
+    
+    if (!authCookie) {
+      return null;
+    }
+    
+    const decodedToken = jwt.verify(
+      authCookie.value,
+      process.env.JWT_SECRET || 'your-secret-key'
+    );
+    
+    return decodedToken;
+  } catch (error) {
+    return null;
+  }
+};
+
+export async function PUT(request, { params }) {
+  try {
+    const paymentId = params.id;
+    const adminData = verifyAdminToken(request);
+    
+    if (!adminData) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+    
+    // Validate payment ID
+    if (!paymentId || isNaN(parseInt(paymentId))) {
+      return NextResponse.json({ message: 'Invalid payment ID' }, { status: 400 });
+    }
+    
+    // Check if payment exists
+    const payment = await prisma.payment.findUnique({
+      where: { id: parseInt(paymentId) },
+    });
+    
+    if (!payment) {
+      return NextResponse.json({ message: 'Payment not found' }, { status: 404 });
+    }
+    
+    // Update payment status to rejected
+    const updatedPayment = await prisma.payment.update({
+      where: { id: parseInt(paymentId) },
+      data: { status: 'rejected' },
+    });
+    
+    return NextResponse.json({
+      message: 'Payment rejected successfully',
+      payment: updatedPayment,
+    });
+    
+  } catch (error) {
+    console.error('Error rejecting payment:', error);
+    return NextResponse.json({ message: 'Failed to reject payment' }, { status: 500 });
+  }
+}
