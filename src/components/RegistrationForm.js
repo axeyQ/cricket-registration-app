@@ -98,6 +98,7 @@ export default function RegistrationForm() {
               value={formData.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               required
             />
           </div>
@@ -112,6 +113,7 @@ export default function RegistrationForm() {
               value={formData.address}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               rows="3"
               required
             />
@@ -129,6 +131,7 @@ export default function RegistrationForm() {
               onChange={handleChange}
               placeholder="+91 1234567890"
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               required
             />
           </div>
@@ -144,6 +147,7 @@ export default function RegistrationForm() {
               value={formData.dateOfBirth}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               required
             />
           </div>
@@ -158,6 +162,7 @@ export default function RegistrationForm() {
               value={formData.bowlingHand}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               required
             >
               <option value="right">Right</option>
@@ -175,6 +180,7 @@ export default function RegistrationForm() {
               value={formData.battingHand}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               required
             >
               <option value="right">Right</option>

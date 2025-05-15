@@ -74,6 +74,7 @@ export default function AdminLogin() {
               value={formData.username}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               required
             />
           </div>
@@ -89,6 +90,7 @@ export default function AdminLogin() {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ color: '#333' }}
               required
             />
           </div>

@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import connectToDatabase from '@/lib/mongodb';
+import { User, Payment } from '@/models';
 
 export async function POST(request) {
   try {
+    // Connect to MongoDB
+    await connectToDatabase();
+    
     const data = await request.json();
     
     // Validate required fields
@@ -14,31 +18,27 @@ export async function POST(request) {
     }
     
     // Create the user
-    const user = await prisma.user.create({
-      data: {
-        name: data.name,
-        address: data.address,
-        whatsappNumber: data.whatsappNumber,
-        dateOfBirth: new Date(data.dateOfBirth),
-        bowlingHand: data.bowlingHand,
-        battingHand: data.battingHand,
-      },
+    const user = await User.create({
+      name: data.name,
+      address: data.address,
+      whatsappNumber: data.whatsappNumber,
+      dateOfBirth: new Date(data.dateOfBirth),
+      bowlingHand: data.bowlingHand,
+      battingHand: data.battingHand,
     });
     
     // Create a pending payment record
-    const amount = 300; // Example fixed amount - customize as needed
-    const payment = await prisma.payment.create({
-      data: {
-        userId: user.id,
-        amount: amount,
-        status: 'pending',
-      },
+    const amount = 300; // Registration fee amount
+    const payment = await Payment.create({
+      userId: user._id,
+      amount: amount,
+      status: 'pending',
     });
     
     return NextResponse.json({ 
       message: 'Registration successful', 
-      userId: user.id,
-      paymentId: payment.id,
+      userId: user._id,
+      paymentId: payment._id,
       amount: amount 
     });
     

@@ -65,6 +65,7 @@ export default function PaymentConfirmation({ userId, paymentId, transactionId, 
             value={transactionId}
             onChange={(e) => setTransactionId(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded"
+            style={{ color: '#333' }}
             placeholder="e.g. 123456789012"
             required
           />

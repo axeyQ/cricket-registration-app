@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import connectToDatabase from '@/lib/mongodb';
+import { Payment } from '@/models';
+import mongoose from 'mongoose';
 
 export async function POST(request) {
   try {
+    // Connect to MongoDB
+    await connectToDatabase();
+    
     const { userId, paymentId, transactionId } = await request.json();
     
     // Validate required fields
@@ -13,13 +18,10 @@ export async function POST(request) {
     }
     
     // Update the payment with transaction ID
-    await prisma.payment.update({
-      where: { id: parseInt(paymentId) },
-      data: {
-        transactionId: transactionId,
-        // Keep status as pending, so admin can verify
-      },
-    });
+    await Payment.findByIdAndUpdate(
+      paymentId,
+      { transactionId: transactionId }
+    );
     
     return NextResponse.json({ 
       message: 'Payment confirmation submitted successfully' 

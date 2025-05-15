@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
-import prisma from '@/lib/db';
+import connectToDatabase from '@/lib/mongodb';
+import { Payment } from '@/models';
+import mongoose from 'mongoose';
 
 // Helper function to verify admin token
 const verifyAdminToken = (request) => {
@@ -25,6 +27,9 @@ const verifyAdminToken = (request) => {
 
 export async function PUT(request, { params }) {
   try {
+    // Connect to MongoDB
+    await connectToDatabase();
+    
     const paymentId = params.id;
     const adminData = verifyAdminToken(request);
     
@@ -33,24 +38,23 @@ export async function PUT(request, { params }) {
     }
     
     // Validate payment ID
-    if (!paymentId || isNaN(parseInt(paymentId))) {
+    if (!paymentId || !mongoose.Types.ObjectId.isValid(paymentId)) {
       return NextResponse.json({ message: 'Invalid payment ID' }, { status: 400 });
     }
     
     // Check if payment exists
-    const payment = await prisma.payment.findUnique({
-      where: { id: parseInt(paymentId) },
-    });
+    const payment = await Payment.findById(paymentId);
     
     if (!payment) {
       return NextResponse.json({ message: 'Payment not found' }, { status: 404 });
     }
     
     // Update payment status to approved
-    const updatedPayment = await prisma.payment.update({
-      where: { id: parseInt(paymentId) },
-      data: { status: 'approved' },
-    });
+    const updatedPayment = await Payment.findByIdAndUpdate(
+      paymentId,
+      { status: 'approved' },
+      { new: true }
+    );
     
     return NextResponse.json({
       message: 'Payment approved successfully',

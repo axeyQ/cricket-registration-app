@@ -1,17 +1,19 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
+import connectToDatabase from '@/lib/mongodb';
+import { Admin } from '@/models';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
 export async function POST(request) {
   try {
+    // Connect to MongoDB
+    await connectToDatabase();
+    
     const { username, password } = await request.json();
     
     // Find the admin user
-    const admin = await prisma.admin.findUnique({
-      where: { username },
-    });
+    const admin = await Admin.findOne({ username });
     
     if (!admin) {
       return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 });
@@ -26,7 +28,7 @@ export async function POST(request) {
     
     // Create a JWT token
     const token = jwt.sign(
-      { id: admin.id, username: admin.username },
+      { id: admin._id.toString(), username: admin.username },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );

@@ -30,8 +30,10 @@ export default function AdminDashboard() {
       }
       
       const data = await response.json();
+      console.log('Fetched registrations:', data); // Add this line for debugging
       setRegistrations(data);
     } catch (error) {
+      console.error('Error in fetchRegistrations:', error); // Improved error logging
       setError(error.message);
     } finally {
       setIsLoading(false);

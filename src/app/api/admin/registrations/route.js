@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
-import prisma from '@/lib/db';
+import connectToDatabase from '@/lib/mongodb';
+import { User, Payment } from '@/models';
 
 // Helper function to verify admin token
 const verifyAdminToken = (request) => {
@@ -19,6 +20,7 @@ const verifyAdminToken = (request) => {
     
     return decodedToken;
   } catch (error) {
+    console.error('Token verification error:', error);
     return null;
   }
 };
@@ -26,43 +28,40 @@ const verifyAdminToken = (request) => {
 // Get all registrations with payment info
 export async function GET(request) {
   try {
+    // Connect to MongoDB
+    await connectToDatabase();
+    
     const adminData = verifyAdminToken(request);
     
     if (!adminData) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
     
-    // Fetch users with their payment information
-    const registrations = await prisma.user.findMany({
-      include: {
-        payments: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    // Fetch users with their payment information using MongoDB
+    const users = await User.find().sort({ createdAt: -1 });
     
-    // Format the data for the frontend
-    const formattedRegistrations = registrations.map(user => {
-      const payment = user.payments[0] || {}; // Get the latest payment
+    // For each user, get their payments
+    const registrations = await Promise.all(users.map(async (user) => {
+      const payments = await Payment.find({ userId: user._id });
+      const payment = payments[0] || {}; // Get the latest payment
       
       return {
-        id: user.id,
+        id: user._id,
         name: user.name,
         address: user.address,
-        whatsappNumber: user.whatsappNumber,
+        whatsappNumber: user.whatsappNumber || '',
         dateOfBirth: user.dateOfBirth,
         battingHand: user.battingHand,
         bowlingHand: user.bowlingHand,
         createdAt: user.createdAt,
-        paymentId: payment.id || null,
+        paymentId: payment._id || null,
         paymentAmount: payment.amount || 0,
         paymentStatus: payment.status || 'none',
         transactionId: payment.transactionId || null,
       };
-    });
+    }));
     
-    return NextResponse.json(formattedRegistrations);
+    return NextResponse.json(registrations);
     
   } catch (error) {
     console.error('Error fetching registrations:', error);
