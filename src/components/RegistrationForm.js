@@ -136,7 +136,7 @@ export default function RegistrationForm() {
             />
           </div>
           
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="dateOfBirth">
               Date of Birth
             </label>
@@ -150,23 +150,24 @@ export default function RegistrationForm() {
               style={{ color: '#333' }}
               required
             />
-          </div>
+          </div> */}
           
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bowlingHand">
-              Bowling Hand
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="playerType">
+              Player Type
             </label>
             <select
-              id="bowlingHand"
-              name="bowlingHand"
-              value={formData.bowlingHand}
+              id="playerType"
+              name="playerType"
+              value={formData.playerType}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               style={{ color: '#333' }}
               required
             >
-              <option value="right">Right</option>
-              <option value="left">Left</option>
+              <option value="batsman">Batsman</option>
+              <option value="bowler">Bowler</option>
+              <option value="all-rounder">All-Rounder</option>
             </select>
           </div>
           

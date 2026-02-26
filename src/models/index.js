@@ -14,14 +14,11 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  dateOfBirth: {
-    type: Date,
-    required: true,
-  },
-  bowlingHand: {
+
+  playerType: {
     type: String,
     required: true,
-    enum: ['right', 'left'],
+    enum: ['batsman', 'bowler', 'all-rounder'],
   },
   battingHand: {
     type: String,
