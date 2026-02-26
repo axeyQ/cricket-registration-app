@@ -8,9 +8,9 @@ export async function POST(request) {
     await connectToDatabase();
     
     const data = await request.json();
-    
-    // Validate required fields
-    const requiredFields = ['name', 'address', 'whatsappNumber', 'dateOfBirth', 'bowlingHand', 'battingHand'];
+
+    // Validate required fields (aligned with User schema)
+    const requiredFields = ['name', 'address', 'whatsappNumber', 'playerType', 'battingHand'];
     for (const field of requiredFields) {
       if (!data[field]) {
         return NextResponse.json({ message: `${field} is required` }, { status: 400 });
@@ -22,8 +22,7 @@ export async function POST(request) {
       name: data.name,
       address: data.address,
       whatsappNumber: data.whatsappNumber,
-      dateOfBirth: new Date(data.dateOfBirth),
-      bowlingHand: data.bowlingHand,
+      playerType: data.playerType,
       battingHand: data.battingHand,
     });
     
