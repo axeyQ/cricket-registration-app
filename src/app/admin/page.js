@@ -141,9 +141,6 @@ export default function AdminDashboard() {
                     <tr key={reg.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="font-medium text-gray-900">{reg.name}</div>
-                        <div className="text-sm text-gray-500">
-                          {new Date(reg.dateOfBirth).toLocaleDateString()}
-                        </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-900">{reg.address}</div>
@@ -156,7 +153,7 @@ export default function AdminDashboard() {
                           Batting: <span className="font-medium">{reg.battingHand}</span>
                         </div>
                         <div className="text-sm text-gray-900">
-                          Bowling: <span className="font-medium">{reg.bowlingHand}</span>
+                          Player Type: <span className="font-medium">{reg.playerType}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
