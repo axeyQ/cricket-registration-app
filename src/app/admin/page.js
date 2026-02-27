@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export default function AdminDashboard() {
   const [registrations, setRegistrations] = useState([]);
@@ -84,13 +86,67 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDownload = () => {
+  // const handleDownload = () => {
+  //   if (!registrations || registrations.length === 0) {
+  //     setError('No registrations to download');
+  //     return;
+  //   }
+  //
+  //   const headers = [
+  //     'Name',
+  //     'Address',
+  //     'WhatsApp Number',
+  //     'Batting Hand',
+  //     'Player Type',
+  //     'Payment Status',
+  //     'Amount',
+  //     'Transaction ID',
+  //   ];
+  //
+  //   const escapeCell = (value) => {
+  //     if (value === null || value === undefined) return '';
+  //     const str = String(value);
+  //     if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+  //       return `"${str.replace(/"/g, '""')}"`;
+  //     }
+  //     return str;
+  //   };
+  //
+  //   const rows = registrations.map((reg) => [
+  //     escapeCell(reg.name),
+  //     escapeCell(reg.address),
+  //     escapeCell(reg.whatsappNumber),
+  //     escapeCell(reg.battingHand),
+  //     escapeCell(reg.playerType),
+  //     escapeCell(reg.paymentStatus),
+  //     escapeCell(reg.paymentAmount),
+  //     escapeCell(reg.transactionId || ''),
+  //   ]);
+  //
+  //   const csvContent = [
+  //     headers.join(','),
+  //     ...rows.map((row) => row.join(',')),
+  //   ].join('\n');
+  //
+  //   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  //   const url = URL.createObjectURL(blob);
+  //   const link = document.createElement('a');
+  //   link.href = url;
+  //   link.setAttribute('download', 'registrations.csv');
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  //   URL.revokeObjectURL(url);
+  // };
+
+  const handleDownloadPdf = () => {
     if (!registrations || registrations.length === 0) {
       setError('No registrations to download');
       return;
     }
 
-    const headers = [
+    const doc = new jsPDF();
+    const tableColumn = [
       'Name',
       'Address',
       'WhatsApp Number',
@@ -101,40 +157,27 @@ export default function AdminDashboard() {
       'Transaction ID',
     ];
 
-    const escapeCell = (value) => {
-      if (value === null || value === undefined) return '';
-      const str = String(value);
-      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return `"${str.replace(/"/g, '""')}"`;
-      }
-      return str;
-    };
-
-    const rows = registrations.map((reg) => [
-      escapeCell(reg.name),
-      escapeCell(reg.address),
-      escapeCell(reg.whatsappNumber),
-      escapeCell(reg.battingHand),
-      escapeCell(reg.playerType),
-      escapeCell(reg.paymentStatus),
-      escapeCell(reg.paymentAmount),
-      escapeCell(reg.transactionId || ''),
+    const tableRows = registrations.map((reg) => [
+      reg.name || '',
+      reg.address || '',
+      reg.whatsappNumber || '',
+      reg.battingHand || '',
+      reg.playerType || '',
+      reg.paymentStatus || '',
+      reg.paymentAmount != null ? `₹${reg.paymentAmount}` : '',
+      reg.transactionId || '',
     ]);
 
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((row) => row.join(',')),
-    ].join('\n');
+    doc.text('Cricket Registrations', 14, 16);
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [59, 130, 246] },
+    });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'registrations.csv');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    doc.save('registrations.pdf');
   };
 
   return (
@@ -144,10 +187,10 @@ export default function AdminDashboard() {
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <div className="flex space-x-2">
             <button
-              onClick={handleDownload}
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleDownloadPdf}
+              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
             >
-              Download Excel
+              Download PDF
             </button>
             <button
               onClick={handleLogout}
