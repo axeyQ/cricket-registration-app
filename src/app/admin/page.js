@@ -16,6 +16,7 @@ export default function AdminDashboard() {
 
   const fetchRegistrations = async () => {
     setIsLoading(true);
+    
     try {
       const response = await fetch('/api/admin/registrations');
       
