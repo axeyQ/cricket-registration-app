@@ -5,8 +5,8 @@ import { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
 
 export default function PaymentQR({ userId, amount }) {
-  const merchantUpiId = '7987925858@ibl'; // Replace with your actual UPI ID
-  const merchantName = 'Cricket Registration';
+  const merchantUpiId = '8319462500-2@axl'; // Replace with your actual UPI ID
+  const merchantName = 'Sumit Sharma SO Ram Kishore';
   const transactionNote = 'Registration Fee';
   
   // Construct UPI URL

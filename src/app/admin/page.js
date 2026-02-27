@@ -83,17 +83,78 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDownload = () => {
+    if (!registrations || registrations.length === 0) {
+      setError('No registrations to download');
+      return;
+    }
+
+    const headers = [
+      'Name',
+      'Address',
+      'WhatsApp Number',
+      'Batting Hand',
+      'Player Type',
+      'Payment Status',
+      'Amount',
+      'Transaction ID',
+    ];
+
+    const escapeCell = (value) => {
+      if (value === null || value === undefined) return '';
+      const str = String(value);
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
+    const rows = registrations.map((reg) => [
+      escapeCell(reg.name),
+      escapeCell(reg.address),
+      escapeCell(reg.whatsappNumber),
+      escapeCell(reg.battingHand),
+      escapeCell(reg.playerType),
+      escapeCell(reg.paymentStatus),
+      escapeCell(reg.paymentAmount),
+      escapeCell(reg.transactionId || ''),
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) => row.join(',')),
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'registrations.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Logout
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={handleDownload}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Download Excel
+            </button>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Logout
+            </button>
+          </div>
         </div>
         
         {error && (
