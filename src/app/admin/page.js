@@ -152,9 +152,6 @@ export default function AdminDashboard() {
       'WhatsApp Number',
       'Batting Hand',
       'Player Type',
-      'Payment Status',
-      'Amount',
-      'Transaction ID',
     ];
 
     const tableRows = registrations.map((reg) => [
@@ -163,9 +160,6 @@ export default function AdminDashboard() {
       reg.whatsappNumber || '',
       reg.battingHand || '',
       reg.playerType || '',
-      reg.paymentStatus || '',
-      reg.paymentAmount != null ? `₹${reg.paymentAmount}` : '',
-      reg.transactionId || '',
     ]);
 
     doc.text('Cricket Registrations', 14, 16);
