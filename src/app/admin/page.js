@@ -168,95 +168,98 @@ export default function AdminDashboard() {
           <div className="text-center py-8">Loading...</div>
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contact Info
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Playing Style
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Payment Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {registrations.length === 0 ? (
+          <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
                   <tr>
-                    <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
-                      No registrations found
-                    </td>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Contact Info
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Playing Style
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Payment Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Transaction ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
-                ) : (
-                  registrations.map((reg) => (
-                    <tr key={reg.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-gray-900">{reg.name}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">{reg.address}</div>
-                        <div className="text-sm text-gray-600">
-                          <span className="font-medium">WhatsApp:</span> {reg.whatsappNumber}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">
-                          Batting: <span className="font-medium">{reg.battingHand}</span>
-                        </div>
-                        <div className="text-sm text-gray-900">
-                          Player Type: <span className="font-medium">{reg.playerType}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${reg.paymentStatus === 'approved' ? 'bg-green-100 text-green-800' : 
-                            reg.paymentStatus === 'rejected' ? 'bg-red-100 text-red-800' : 
-                            'bg-yellow-100 text-yellow-800'}`}>
-                          {reg.paymentStatus}
-                        </span>
-                        {reg.transactionId && (
-                          <div className="text-xs text-gray-500 mt-1">
-                            Trans ID: {reg.transactionId}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        ₹{reg.paymentAmount}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        {reg.paymentStatus === 'pending' && (
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleApprove(reg.paymentId)}
-                              className="text-green-600 hover:text-green-900 bg-green-100 px-2 py-1 rounded"
-                            >
-                              Approve
-                            </button>
-                            <button
-                              onClick={() => handleReject(reg.paymentId)}
-                              className="text-red-600 hover:text-red-900 bg-red-100 px-2 py-1 rounded"
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        )}
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {registrations.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
+                        No registrations found
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    registrations.map((reg) => (
+                      <tr key={reg.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="font-medium text-gray-900">{reg.name}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">{reg.address}</div>
+                          <div className="text-sm text-gray-600">
+                            <span className="font-medium">WhatsApp:</span> {reg.whatsappNumber}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900">
+                            Batting: <span className="font-medium">{reg.battingHand}</span>
+                          </div>
+                          <div className="text-sm text-gray-900">
+                            Player Type: <span className="font-medium">{reg.playerType}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            ${reg.paymentStatus === 'approved' ? 'bg-green-100 text-green-800' : 
+                              reg.paymentStatus === 'rejected' ? 'bg-red-100 text-red-800' : 
+                              'bg-yellow-100 text-yellow-800'}`}>
+                            {reg.paymentStatus}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          ₹{reg.paymentAmount}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {reg.transactionId || '-'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          {reg.paymentStatus === 'pending' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleApprove(reg.paymentId)}
+                                className="text-green-600 hover:text-green-900 bg-green-100 px-2 py-1 rounded"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleReject(reg.paymentId)}
+                                className="text-red-600 hover:text-red-900 bg-red-100 px-2 py-1 rounded"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
