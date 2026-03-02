@@ -151,6 +151,7 @@ export default function AdminDashboard() {
 
     const doc = new jsPDF();
     const tableColumn = [
+      'S.No',
       'Name',
       'Address',
       'WhatsApp Number',
@@ -158,7 +159,8 @@ export default function AdminDashboard() {
       'Player Type',
     ];
 
-    const tableRows = approvedRegistrations.map((reg) => [
+    const tableRows = approvedRegistrations.map((reg, index) => [
+      index + 1,
       reg.name || '',
       reg.address || '',
       reg.whatsappNumber || '',
@@ -213,6 +215,9 @@ export default function AdminDashboard() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      S.No
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Name
                     </th>
@@ -244,8 +249,11 @@ export default function AdminDashboard() {
                       </td>
                     </tr>
                   ) : (
-                    registrations.map((reg) => (
+                    registrations.map((reg, index) => (
                       <tr key={reg.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {index + 1}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-gray-900">{reg.name}</div>
                         </td>
