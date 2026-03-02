@@ -69,9 +69,9 @@ export default function AdminDashboard() {
       if (!response.ok) {
         throw new Error('Failed to reject payment');
       }
-      
-      // Refresh registrations list
-      fetchRegistrations();
+
+      // Remove rejected registration from local state so it disappears from the table
+      setRegistrations((prev) => prev.filter((reg) => reg.paymentId !== paymentId));
     } catch (error) {
       setError(error.message);
     }
@@ -140,8 +140,12 @@ export default function AdminDashboard() {
   // };
 
   const handleDownloadPdf = () => {
-    if (!registrations || registrations.length === 0) {
-      setError('No registrations to download');
+    const approvedRegistrations = registrations.filter(
+      (reg) => reg.paymentStatus === 'approved'
+    );
+
+    if (!approvedRegistrations || approvedRegistrations.length === 0) {
+      setError('No approved registrations to download');
       return;
     }
 
@@ -154,7 +158,7 @@ export default function AdminDashboard() {
       'Player Type',
     ];
 
-    const tableRows = registrations.map((reg) => [
+    const tableRows = approvedRegistrations.map((reg) => [
       reg.name || '',
       reg.address || '',
       reg.whatsappNumber || '',
