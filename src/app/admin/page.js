@@ -9,6 +9,7 @@ export default function AdminDashboard() {
   const [registrations, setRegistrations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const router = useRouter();
 
   // Fetch registrations on component mount
@@ -180,24 +181,44 @@ export default function AdminDashboard() {
     doc.save('registrations.pdf');
   };
 
+  const filteredRegistrations =
+    filterStatus === 'all'
+      ? registrations
+      : registrations.filter((reg) => reg.paymentStatus === filterStatus);
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <div className="flex space-x-2">
-            <button
-              onClick={handleDownloadPdf}
-              className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Download PDF
-            </button>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Logout
-            </button>
+          <div className="flex items-center space-x-4">
+            <div>
+              <label className="mr-2 text-sm font-medium text-gray-700">Filter:</label>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="border border-gray-300 rounded px-2 py-1 text-sm"
+              >
+                <option value="all">All</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={handleDownloadPdf}
+                className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Download PDF
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
         
@@ -242,14 +263,14 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {registrations.length === 0 ? (
+                  {filteredRegistrations.length === 0 ? (
                     <tr>
-                      <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
+                      <td colSpan="8" className="px-6 py-4 text-center text-gray-500">
                         No registrations found
                       </td>
                     </tr>
                   ) : (
-                    registrations.map((reg, index) => (
+                    filteredRegistrations.map((reg, index) => (
                       <tr key={reg.id} className="hover:bg-gray-50">
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                           {index + 1}
